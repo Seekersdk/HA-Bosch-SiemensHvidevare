@@ -1,0 +1,38 @@
+type: vertical-stack
+cards:
+  - type: custom:mushroom-title-card
+    title: Opvaskemaskine
+  - type: vertical-stack
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.011060524695012851_bsh_common_setting_powerstate
+            name: Opvaskemaskine
+            icon: mdi:dishwasher
+          - entity: timer.dishwasher_program_finish
+            name: Tid til slut
+            type: custom:timer-bar-card
+          - entity: input_boolean.opvaskemaskine_timetstart
+            icon: mdi:cloud-clock
+            name: Slå timer til
+          - entity: timer.opvaskemaskine_countdown_to_cheapest_time
+            name: Tid til start
+          - entity: select.011060524695012851_programs
+            name: Valgt Program
+          - entity: input_datetime.calculator_end_time
+            type: custom:time-picker-card
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 5
+            layout:
+              hour_mode: double
+              align_controls: center
+              name: inside
+              embedded: true
+              thin: true
+            hide:
+              seconds: true
+              icon: true
+              name: false
+            link_values: false
+            name: Senest færdig
