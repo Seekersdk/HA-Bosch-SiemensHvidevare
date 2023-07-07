@@ -1,0 +1,23 @@
+alias: Opvaskemaskine_Reset
+description: ""
+trigger:
+  - platform: device
+    device_id: bf00b8b547e7879d5756a02752742043
+    domain: home_connect_alt
+    type: program_started
+  - platform: state
+    entity_id:
+      - >-
+        binary_sensor.011060524695012851_bsh_common_status_remotecontrolstartallowed
+    to: "off"
+condition: []
+action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.opvaskemaskine_timetstart
+  - service: timer.cancel
+    data: {}
+    target:
+      entity_id: timer.opvaskemaskine_countdown_to_cheapest_time
+mode: single
