@@ -1,0 +1,75 @@
+alias: Opvaskemaskine_Timer
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - >-
+        binary_sensor.011060524695012851_bsh_common_status_remotecontrolstartallowed
+    to: "on"
+    enabled: true
+  - platform: device
+    type: turned_on
+    device_id: bf00b8b547e7879d5756a02752742043
+    entity_id: switch.011060524695012851_bsh_common_setting_powerstate
+    domain: switch
+  - platform: state
+    entity_id: input_datetime.calculator_end_time
+condition:
+  - type: is_on
+    condition: device
+    device_id: bf00b8b547e7879d5756a02752742043
+    entity_id: binary_sensor.011060524695012851_bsh_common_status_remotecontrolactive
+    domain: binary_sensor
+  - condition: device
+    type: is_on
+    device_id: bf00b8b547e7879d5756a02752742043
+    entity_id: switch.011060524695012851_bsh_common_setting_powerstate
+    domain: switch
+  - type: is_off
+    condition: device
+    device_id: bf00b8b547e7879d5756a02752742043
+    entity_id: >-
+      binary_sensor.011060524695012851_bsh_common_option_remainingprogramtimeisestimated
+    domain: binary_sensor
+action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.calculator_duration
+    data:
+      datetime: >
+        {% if is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Intensiv70') %}
+          2023-07-07T02:50:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Eco50') %}
+          2023-07-07T04:00:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Auto2') %}
+          2023-07-07T02:30:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Quick65') %}
+          2023-07-07T01:45:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.NightWash') %}
+          2023-07-07T04:00:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.MachineCare') %}
+          2023-07-07T02:10:00      
+        {% else %}
+          2023-07-07T12:00:00
+        {% endif %}
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.opvaskemaskine_timetstart
+  - service: timer.start
+    data:
+      entity_id: timer.opvaskemaskine_countdown_to_cheapest_time
+      duration: >
+        {% set now = now() %} {% set target =
+        strptime(states('sensor.price_calculator_cheapest_time'), "%Y-%m-%d
+        %H:%M:%S%z") %} {% set duration_seconds = (target - now).total_seconds()
+        %} {% if duration_seconds < 0 %}
+          {% set duration_seconds = 0 %}
+        {% endif %} {{ duration_seconds }}      
+mode: single
