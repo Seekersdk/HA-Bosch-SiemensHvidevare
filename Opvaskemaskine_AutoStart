@@ -1,0 +1,46 @@
+alias: Opvaskemaskine_AutoStart
+description: ""
+trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.opvaskemaskine_countdown_to_cheapest_time
+condition:
+  - condition: state
+    entity_id: input_boolean.opvaskemaskine_timetstart
+    state: "on"
+action:
+  - type: turn_on
+    device_id: 2b12314f0ba348a09d387f0520102652
+    entity_id: switch.opvaskemaskine_power
+    domain: switch
+    enabled: true
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 8
+      milliseconds: 0
+    enabled: true
+  - service: home_connect_alt.start_program
+    data:
+      validate: true
+      device_id: 2b12314f0ba348a09d387f0520102652
+      program_key: Dishcare.Dishwasher.Program.Eco50
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.opvaskemaskine_timetstart
+  - service: timer.start
+    target:
+      entity_id: timer.dishwasher_program_finish
+    data:
+      duration: |
+        {{ 
+          (as_timestamp(states('sensor.011060524695012851_bsh_common_option_remainingprogramtime')) - as_timestamp(now())) | int | timestamp_custom('%H:%M:%S', False)
+        }}      
+mode: single
