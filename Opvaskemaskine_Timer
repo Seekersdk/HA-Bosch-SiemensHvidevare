@@ -25,12 +25,6 @@ condition:
     device_id: bf00b8b547e7879d5756a02752742043
     entity_id: switch.011060524695012851_bsh_common_setting_powerstate
     domain: switch
-  - type: is_off
-    condition: device
-    device_id: bf00b8b547e7879d5756a02752742043
-    entity_id: >-
-      binary_sensor.011060524695012851_bsh_common_option_remainingprogramtimeisestimated
-    domain: binary_sensor
 action:
   - service: input_datetime.set_datetime
     target:
