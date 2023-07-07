@@ -1,0 +1,30 @@
+alias: Set Dishwasher Program Duration
+description: ""
+trigger: []
+action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.calculator_duration
+    data:
+      datetime: >
+        {% if is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Intensiv70') %}
+          2023-07-07T02:50:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Eco50') %}
+          2023-07-07T04:00:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Auto2') %}
+          2023-07-07T02:30:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.Quick65') %}
+          2023-07-07T01:45:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.NightWash') %}
+          2023-07-07T04:00:00
+        {% elif is_state('select.011060524695012851_programs',
+        'Dishcare.Dishwasher.Program.MachineCare') %}
+          2023-07-07T02:10:00      
+        {% else %}
+          2023-07-07T12:00:00
+        {% endif %}
